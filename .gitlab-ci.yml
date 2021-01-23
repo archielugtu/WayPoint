@@ -1,0 +1,114 @@
+stages:
+  - build
+  - setup
+  - test
+  - deploy
+
+tag_checker:
+  stage: build
+  script:
+    - python tag_checker.py $CI_COMMIT_TAG
+  only:
+    - tags
+
+setup:
+  stage: setup
+  script:
+    - git lfs pull
+    - cd client
+    - npm install
+  cache:
+    paths:
+      - client/node_modules/
+  artifacts:
+    paths:
+      - client/node_modules/
+
+cucumber:
+  stage: test
+  variables:
+    SENG302_DB_TABLE: $DB_TABLE_TEST
+  script:
+    - cd server
+    - ./gradlew cucumber
+
+junit:
+  stage: test
+  variables:
+    SENG302_DB_TABLE: $DB_TABLE_TEST
+  script:
+    - cd server
+    - ./gradlew test --info
+    - ./gradlew sonarqube
+
+jest:
+  stage: test
+  script:
+    - cd client
+    - npm install
+    - npm run test
+    - npm run sonarqube
+
+deploy-test-server:
+  stage: deploy
+  script:
+    # Create jar file
+    - cd server
+    - ./gradlew bootJar
+    # Move jar file to clean directory
+    - rm -rf /home/gitlab-runner/test-server/
+    - mkdir -p /home/gitlab-runner/test-server/
+    - cp -r ./build/libs /home/gitlab-runner/test-server
+    # Update bash script and restart service
+    - sudo systemctl restart testServer
+  only:
+    refs:
+      - dev
+
+deploy-test-client:
+  stage: deploy
+  script:
+    # Generate website files
+    - cd client
+    - npm run build
+    # Move artifact to clean directory
+    - rm -rf /home/gitlab-runner/test-client/
+    - mkdir -p /home/gitlab-runner/test-client/
+    - cp -r ./dist /home/gitlab-runner/test-client
+    # restart service
+    - sudo systemctl restart testClient
+  only:
+    refs:
+      - dev
+
+deploy-prod-server:
+  stage: deploy
+  script:
+    # Create jar file
+    - cd server
+    - ./gradlew bootJar
+    # Move jar file to clean directory
+    - rm -rf /home/gitlab-runner/prod-server/
+    - mkdir -p /home/gitlab-runner/prod-server/
+    - cp -r ./build/libs /home/gitlab-runner/prod-server
+    # restart service
+    - sudo systemctl restart prodServer
+  only:
+    refs:
+      - master
+
+deploy-prod-client:
+  stage: deploy
+  script:
+    # Generate website files
+    - cd client
+    - npm run build-prod
+    # Move artifact to clean directory
+    - rm -rf /home/gitlab-runner/prod-client/
+    - mkdir -p /home/gitlab-runner/prod-client/
+    - cp -r ./dist /home/gitlab-runner/prod-client
+    # restart service
+    - sudo systemctl restart prodClient
+  only:
+    refs:
+      - master

@@ -1,0 +1,19 @@
+{
+    "params": {
+        "devMode": false,
+        "user": {
+            "firstName": "Fabian",
+            "middleName": "Agile",
+            "lastName": "Gilson",
+            "nickname": "Fab",
+            "birthDate": "1999-07-10",
+            "bio": "Be fast, be #agile",
+            "email": "fabian@gilson.me",
+            "password": "password",
+            "activityTypes": ["Dodgeball"]
+        },
+        "loginInvalidEmail": false,
+        "loginInvalidCredentials": false,
+        "signupInvalidEmail": false
+    }
+}

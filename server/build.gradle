@@ -1,0 +1,92 @@
+plugins {
+	id 'org.springframework.boot' version '2.2.4.RELEASE'
+	id 'io.spring.dependency-management' version '1.0.9.RELEASE'
+	id 'java'
+
+    // Apply Jacoco test coverage reports
+    id 'jacoco'
+    // run Sonarqube from gradle task
+    id "org.sonarqube" version "2.8"
+}
+
+group = 'com.spring-vue-gradle'
+version = '0.0.1-SNAPSHOT'
+sourceCompatibility = '11'
+
+configurations {
+	compileOnly {
+		extendsFrom annotationProcessor
+	}
+
+	cucumberRuntime {
+		extendsFrom testImplementation
+	}
+}
+
+repositories {
+	mavenCentral()
+}
+
+dependencies {
+	compile 'io.jsonwebtoken:jjwt-api:0.11.0'
+	compile group: 'org.mariadb.jdbc', name: 'mariadb-java-client', version: '2.2.0'
+	runtime 'io.jsonwebtoken:jjwt-impl:0.11.0',
+			// Uncomment the next line if you want to use RSASSA-PSS (PS256, PS384, PS512) algorithms:
+			//'org.bouncycastle:bcprov-jdk15on:1.60',
+			'io.jsonwebtoken:jjwt-jackson:0.11.0' // or 'io.jsonwebtoken:jjwt-gson:0.11.0' for gson
+
+
+	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+	implementation 'org.springframework.boot:spring-boot-starter-data-rest'
+	implementation 'org.springframework.boot:spring-boot-starter-web'
+	implementation 'org.springframework.boot:spring-boot-starter-security'
+	implementation 'org.springframework.security:spring-security-test'
+	runtimeOnly 'com.h2database:h2'
+	annotationProcessor 'org.projectlombok:lombok'
+	testImplementation('org.springframework.boot:spring-boot-starter-test') {
+		exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
+	}
+	testImplementation 'io.cucumber:cucumber-spring:5.6.0'
+	testImplementation 'io.cucumber:cucumber-java:5.6.0'
+	testImplementation 'io.cucumber:cucumber-junit:5.6.0'
+	implementation 'junit:junit:4.12'
+}
+
+test {
+	useJUnitPlatform()
+    finalizedBy jacocoTestReport
+}
+
+// Jacoco test coverage configuration
+jacoco {
+    toolVersion = "0.8.2"
+}
+// select what reports to generate and where to put them
+jacocoTestReport {
+    reports {
+        xml.enabled true
+        xml.destination file("${buildDir}/jacoco/test-report.xml")
+        csv.enabled false
+        html.destination file("${buildDir}/jacoco/html")
+    }
+}
+
+// Sonarqube specific configuration
+sonarqube {
+    properties {
+        property "sonar.projectKey", "team-200-server"
+        property "sonar.projectName", "team 200 - server"
+        property "sonar.sourceEncoding", "UTF-8"
+        // replace "X" hereunder to match your VM url
+        property "sonar.host.url", "https://csse-s302g2.canterbury.ac.nz/sonarqube/"
+        property "sonar.login", "8cb4c6141bafc698f1d48fb43bd4f1128c59b2d1"
+    }
+}
+
+task cucumber(type: Test) {
+	testLogging.showStandardStreams = true
+	useJUnit()
+}
+
+// Run bootRun after it runs the tests
+//bootRun.dependsOn test

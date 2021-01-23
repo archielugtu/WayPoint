@@ -1,0 +1,95 @@
+{
+  "name": "client",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "serve": "vue-cli-service serve --port 9500",
+    "build": "vue-cli-service build --mode staging",
+    "build-prod": "vue-cli-service build --mode prod",
+    "kill-all": "fuser -k 9500/tcp 9499/tcp",
+    "lint": "vue-cli-service lint",
+    "test": "jest --coverage",
+    "sonarqube": "node sonarqube-analysis.js",
+    "tw": "jest --watch"
+  },
+  "jest": {
+    "verbose": true,
+    "setupFilesAfterEnv": [
+      "./src/mocks/setupGoogleMapMock.js"
+    ],
+    "moduleFileExtensions": [
+      "js",
+      "json",
+      "vue"
+    ],
+    "modulePaths": [
+      "<rootDir>/src",
+      "<rootDir>/node_modules"
+    ],
+    "transform": {
+      "^.+\\.js$": "<rootDir>/node_modules/babel-jest",
+      "^.+\\.vue$": "<rootDir>/node_modules/vue-jest",
+      "\\.(jpg|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2|mp4|webm|wav|mp3|m4a|aac|oga)$": "<rootDir>/assetsTransformer.js",
+      "\\.(css|less)$": "<rootDir>/assetsTransformer.js"
+    },
+    "moduleNameMapper": {
+      "^@/(.*)$": "<rootDir>/src/$1"
+    },
+    "coveragePathIgnorePatterns": [
+      "/node_modules/"
+    ],
+    "testResultsProcessor": "jest-sonar-reporter"
+  },
+  "jestSonar": {
+    "reportPath": "coverage",
+    "reportFile": "test-reporter.xml",
+    "indent": 4
+  },
+  "dependencies": {
+    "axios": "^0.19.2",
+    "buefy": "^0.8.20",
+    "bulma": "^0.8.0",
+    "core-js": "^3.6.4",
+    "serve": "^11.3.2",
+    "vue": "^2.6.11",
+    "vue-advanced-cropper": "^0.17.2",
+    "vue-router": "^3.1.5",
+    "vuejs-logger": "^1.5.4",
+    "vuelidate": "^0.7.5",
+    "vuex": "^3.3.0"
+  },
+  "devDependencies": {
+    "@vue/cli-plugin-babel": "~4.2.0",
+    "@vue/cli-plugin-eslint": "~4.2.0",
+    "@vue/cli-plugin-unit-jest": "^4.2.3",
+    "@vue/cli-service": "~4.2.0",
+    "@vue/test-utils": "^1.0.0-beta.32",
+    "babel-eslint": "^10.0.3",
+    "babel-jest": "^25.2.6",
+    "eslint": "^6.7.2",
+    "eslint-plugin-vue": "^6.1.2",
+    "jest": "^25.2.7",
+    "jest-sonar-reporter": "^2.0.0",
+    "sonarqube-scanner": "^2.6.0",
+    "vue-jest": "^3.0.5",
+    "vue-template-compiler": "^2.6.11"
+  },
+  "eslintConfig": {
+    "root": true,
+    "env": {
+      "node": true
+    },
+    "extends": [
+      "plugin:vue/essential",
+      "eslint:recommended"
+    ],
+    "parserOptions": {
+      "parser": "babel-eslint"
+    },
+    "rules": {}
+  },
+  "browserslist": [
+    "> 1%",
+    "last 2 versions"
+  ]
+}
