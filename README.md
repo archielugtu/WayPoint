@@ -1,11 +1,12 @@
 # Waypoint
 Built by Team 200
+- Rchi Lugtu
 - David Turton
 - Jack Craig
 - Jerome Grubb
 - Julia Harrison
 - Kenzie Tandun
-- Rchi Lgutu
+
 -----
 Basic project template using Gradle, NPM, Spring Boot, Vue and Gitlab CI. Remember to set up y
 our Gitlab Ci server (refer to the student guide for instructions).
